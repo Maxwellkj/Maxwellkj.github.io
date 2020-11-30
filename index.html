@@ -23,7 +23,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Start Bootstrap</a>
+      <a class="navbar-brand" href="#">Maxwell Johnston</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -50,15 +50,19 @@
 
   <!-- Header - set the background image for the header in the line below -->
   <header class="py-5 bg-image-full" style="background-image: url('https://unsplash.it/1900/1080?image=1076');">
-    <img class="img-fluid d-block mx-auto" src="http://placehold.it/200x200&text=Logo" alt="">
+    <img class="img-fluid d-block mx-auto" src="Maxwell1.png" alt="">
   </header>
 
   <!-- Content section -->
   <section class="py-5">
     <div class="container">
-      <h1>Section Heading</h1>
-      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, suscipit, rerum quos facilis repellat architecto commodi officia atque nemo facere eum non illo voluptatem quae delectus odit vel itaque amet.</p>
+      <h1>Game Design</h1>
+      <p class="lead">Copter Rush</p>
+      <iframe src="https://i.simmer.io/@MaxwellJohnston/copter-rush" style="width:960px;height:600px"></iframe>
+      <p>This game was designed for the android, therefore some of the scene framing is off, I intended it to be played on a portrait oriented phone, not on the screen resolution used by simmer. However, It shows
+        my passion for game design. I wanted to code a flappy birds like game quickly and efficiently, while teaching myself data persistence, sprite animation, and sprite purchasing/switching. all of those features
+        exist in this game.
+      </p>
     </div>
   </section>
 
@@ -71,9 +75,60 @@
   <!-- Content section -->
   <section class="py-5">
     <div class="container">
-      <h1>Section Heading</h1>
-      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, suscipit, rerum quos facilis repellat architecto commodi officia atque nemo facere eum non illo voluptatem quae delectus odit vel itaque amet.</p>
+      <h1>YouTube Predictor</h1>
+      <pre class="line-numbers">
+        <code class="language-python">
+          import PySimpleGUI as sg
+          from joblib import dump, load
+          import numpy as np
+          import pandas as pd
+
+          clf = load('Prediction.joblib')
+          sg.theme('Dark Blue 3')  # please make your windows colorful
+
+          layout = [[sg.Text('Enter Number of Ratings: \t'), sg.Input(key = '-RatingCount-', size = (20,1))],
+                    [sg.Text('Enter Average Rating: \t'), sg.Input(key = '-AvgRating-', size = (20,1))],
+                    [sg.Text('Number of Comments: \t'), sg.Input(key = '-CommentCount-', size = (20,1))],
+                    [sg.Text(key = '-OUT-', size = (50,2))],
+                    [sg.Text('')],
+                    [sg.Button('Predict'), sg.Button('Exit')]]
+
+          window = sg.Window('Predict Views', layout)
+
+          while True:  # Event Loop
+              event, values = window.read()
+              print(event, values)
+              if event == sg.WIN_CLOSED or event == 'Exit':
+                  break
+              if event == 'Predict':
+                  # change the "output" element to be the value of "input" element
+                  print(int(values['-RatingCount-']))
+                  X = (float(values['-AvgRating-']), int(values['-RatingCount-']), int(values['-CommentCount-']),
+                      (float(values['-AvgRating-'])-3.0) * int(values['-RatingCount-']),
+                      (int(values['-RatingCount-'])+.01)/(int(values['-CommentCount-'])+.01), 
+                      int(values['-RatingCount-'])-int(values['-CommentCount-']))
+                  X= np.reshape(X, (1,-1))
+                  print(X)
+                  Predict_X = clf.predict(X)
+                  if Predict_X[0] == 1:
+                      window['-OUT-'].update('Based on the given data, this program predicts that the video has less than 10,000 Views.')
+                  elif Predict_X[0] == 2:
+                      window['-OUT-'].update('Based on the given data, this program predicts that the video has between 10,000 and 50,000 Views.')
+                  elif Predict_X[0] == 3:
+                      window['-OUT-'].update('Based on the given data, this program predicts that the video has between 50,000 and 250,000 Views.')
+                  elif Predict_X[0] == 4:
+                      window['-OUT-'].update('Based on the given data, this program predicts that the video has between 250,000 and 1,000,000 Views.')
+                  elif Predict_X[0] == 5:
+                      window['-OUT-'].update('Based on the given data, this program predicts that the video has greater than 1,000,000 Views.')
+                  
+                  print(values)
+
+          window.close()
+        </code>
+      </pre>
+      
+      <p class="lead">Predicts View Counts.</p>
+      <p>Uses comment and rating data of youtube videos to predict the view count range that the video should fall under. Only got the model to about 70% accuracy but I did this whole program with one team member in 24 hours. </p>
     </div>
   </section>
 
